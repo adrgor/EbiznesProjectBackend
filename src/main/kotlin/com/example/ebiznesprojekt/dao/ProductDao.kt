@@ -1,14 +1,15 @@
 package com.example.ebiznesprojekt.dao
 
 import com.example.ebiznesprojekt.models.Product
+import kotlin.streams.toList
 
-class ProductDao {
+object ProductDao {
     val PHONES_CATEGORY = "Smartfony i telefony"
     val MONITOR_CATEGORY = "Monitory"
     val COMPUTER_CATEGORY = "Komputery"
     val CONSOLE_CATEGORY = "Konsole"
 
-    val products = listOf<Product>(
+    var products = mutableListOf<Product>(
         Product(1, "Xiaomi Redmi Note 11 4/64GB Twilight Blue", PHONES_CATEGORY, 899.00f),
         Product(2, "Dell P2422H", MONITOR_CATEGORY, 1099.99f),
         Product(3, "Huawei MateBook D 15-R5-5500U/8GB/512/Win11", COMPUTER_CATEGORY, 2999.00f),
@@ -21,11 +22,48 @@ class ProductDao {
         Product(10,"realme 8 4+64GB", PHONES_CATEGORY, 999.00f),
     )
 
+    var indexCounter = 10
+
     fun getAllProducts(): List<Product> {
         return products
     }
 
+    fun getNotInitialProducts(): List<Product> {
+        return products.stream().filter { product -> !product.initialProduct }.toList()
+    }
+
+    fun getInitialProducts(): List<Product> {
+        return products.stream().filter { product -> product.initialProduct }.toList()
+    }
+
     fun getProductById(id: Int): Product {
-        return products.filter { p ->  p.id == id }.first()
+        return products.first { p -> p.id == id }
+    }
+
+    fun addProduct(product: Product) {
+        indexCounter++
+        product.id = indexCounter
+        product.initialProduct = false
+        products.add(product)
+    }
+
+    fun removeProductById(id: Int) {
+        var removeIndex: Int = -1
+        for(i in products.indices) {
+            if(products[i].id == id) {
+                removeIndex = i
+            }
+        }
+        products.removeAt(removeIndex)
+        println(products)
+    }
+
+    fun editProduct(product: Product) {
+        for (i in products.indices) {
+            if(products[i].id == product.id) {
+                product.initialProduct = false
+                products[i] = product
+            }
+        }
     }
 }

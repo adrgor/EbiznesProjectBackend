@@ -6,7 +6,6 @@ class BasketDao {
     val basket = Basket(1, mutableListOf())
 
     fun addToBasket(id: Int) {
-        basket.products.add(ProductDao().getProductById(id))
+        basket.products.add(ProductDao.getProductById(id))
     }
-
 }
